@@ -36,13 +36,13 @@ function SP_ST_Handler(msg)
 
 	local cmd, arg = vars[1], vars[2]
 
-	if (cmd == nil and arg == nil) then
-		SP_ST_Print("Chat commands: x, y, reset, show")
+	if ((cmd == nil or cmd == "") and arg == nil) then
+		SP_ST_Print("Chat commands: x, y, w, h, a, reset, show")
 		SP_ST_Print("    Example: /st show")
 		SP_ST_Print("    Example: /st y -150")
 	elseif (cmd == "x") then
 		if (arg ~= nil) then
-			SP_ST_GS["x"] = arg
+			SP_ST_GS["x"] = tonumber(arg)
 			SP_ST_SetPosition()
 			SP_ST_Print("X set: "..arg)
 		else
@@ -50,13 +50,38 @@ function SP_ST_Handler(msg)
 		end
 	elseif (cmd == "y") then
 		if (arg ~= nil) then
-			SP_ST_GS["y"] = arg
+			SP_ST_GS["y"] = tonumber(arg)
 			SP_ST_SetPosition()
 			SP_ST_Print("Y set: "..arg)
 		else
 			SP_ST_Print("Current y: "..SP_ST_GS["y"]..". To change y say: /st y [number]")
 		end
+	elseif (cmd == "w") then
+		if (arg ~= nil) then
+			SP_ST_GS["w"] = tonumber(arg)
+			SP_ST_SetSize()
+			SP_ST_Print("W(idth) set: "..arg)
+		else
+			SP_ST_Print("Current w: "..SP_ST_GS["w"]..". To change w say: /st w [number]")
+		end
+	elseif (cmd == "h") then
+		if (arg ~= nil) then
+			SP_ST_GS["h"] = tonumber(arg)
+			SP_ST_SetSize()
+			SP_ST_Print("H(eight) set: "..arg)
+		else
+			SP_ST_Print("Current h: "..SP_ST_GS["h"]..". To change h say: /st h [number]")
+		end
+	elseif (cmd == "a") then
+		if (arg ~= nil) then
+			SP_ST_GS["a"] = math.max(math.min(tonumber(arg),1),0)
+			SP_ST_SetAlpha()
+			SP_ST_Print("A(lpha) set: "..SP_ST_GS["a"])
+		else
+			SP_ST_Print("Current alpha: "..SP_ST_GS["a"]..". To change a say: /st a [number]")
+		end
 	elseif (cmd == "reset") then
+		SP_ST_ResetSize()
 		SP_ST_ResetPosition()
 	elseif (cmd == "show") then
 		SP_ST_Reset()
@@ -71,8 +96,32 @@ end
 function SP_ST_SetPosition()
 	SP_ST_Frame:SetPoint("CENTER", "UIParent", "CENTER", SP_ST_GS["x"], SP_ST_GS["y"])
 end
+local st_regions = {"SP_ST_Frame", "SP_ST_FrameTime", "SP_ST_FrameText"}
+function SP_ST_ResetSize()
+	SP_ST_GS["w"] = 500
+	SP_ST_GS["h"] = 15
+	SP_ST_SetSize()
+end
+function SP_ST_SetSize()
+	if not (SP_ST_GS["w"] and SP_ST_GS["h"]) then
+		SP_ST_GS["w"] = 500
+		SP_ST_GS["h"] = 15
+	end
+	for _,region in ipairs(st_regions) do
+		getglobal(region):SetWidth(SP_ST_GS["w"])
+		getglobal(region):SetHeight(SP_ST_GS["h"])
+	end
+	SP_ST_SetPosition()
+end
+function SP_ST_SetAlpha()
+	for _,region in ipairs(st_regions) do
+		getglobal(region):SetAlpha(SP_ST_GS["a"] or 1.0)
+	end
+end
 
 function SP_ST_OnLoad()
+  local _,player_class = UnitClass("player")
+  if not player_class == "WARRIOR" then return end
 	this:RegisterEvent("ADDON_LOADED")
 	this:RegisterEvent("PLAYER_REGEN_ENABLED")
 	this:RegisterEvent("PLAYER_REGEN_DISABLED")
@@ -105,12 +154,16 @@ function SP_ST_OnEvent()
 				SP_ST_GS = {
 					["x"] = 0,
 					["y"] = -100,
+					["w"] = 500,
+					["h"] = 15,
+					["a"] = 1
 				}
 			end
 
 			SP_ST_SetWeapon()
-
+			SP_ST_SetSize()
 			SP_ST_SetPosition()
+			SP_ST_SetAlpha()
 			SP_ST_UpdateDisplay()
 			SP_ST_Frame:SetAlpha(0)
 			SP_ST_Frame:Show()
@@ -209,6 +262,7 @@ function SP_ST_Display(msg)
 	SP_ST_FrameText:SetText(msg)
 end
 function SP_ST_UpdateDisplay()
+	local width = tonumber(SP_ST_GS["w"]) or 500
 	if (SP_ST_TimeLeft == 0) then
 		SP_ST_FrameTime:Hide()
 		SP_ST_Display("0.0")
@@ -217,9 +271,9 @@ function SP_ST_UpdateDisplay()
 			SP_ST_Frame:SetAlpha(0)
 		end
 	else
-		local size = (SP_ST_TimeLeft / SP_ST_GetWeaponSpeed()) * 500
-		if (size > 500) then
-			size = 500
+		local size = (SP_ST_TimeLeft / SP_ST_GetWeaponSpeed()) * width
+		if (size > width) then
+			size = width
 			SP_ST_FrameTime:SetTexture(1, 0, 0.6, 0.9)
 		elseif (SP_ST_TimeLeft <= SP_ST_SlamTime) then
 			SP_ST_FrameTime:SetTexture(0, 1, 0, 0.9)
@@ -231,7 +285,7 @@ function SP_ST_UpdateDisplay()
 
 		SP_ST_Display(string.sub(SP_ST_TimeLeft, 1, 3))
 
-		SP_ST_Frame:SetAlpha(1)
+		SP_ST_Frame:SetAlpha(SP_ST_GS["a"])
 	end
 end
 

@@ -34,7 +34,22 @@
 	Change y-position:
 		/st y [number]
 
-	Reset default bar position (x=0, y=-100):
+	Get bar W(idth):
+		/st w
+
+	Get bar H(eight):
+		/st h
+
+	Change width:
+		/st w [number]
+
+	Change height:
+		/st h [number]
+
+	Change alpha:
+		/st a [number] *(between 0-1)*
+
+	Reset default bar position and size (x=0, y=-100, w=500, h=15):
 		/st reset
 
 	Show the timer. For testing only.
