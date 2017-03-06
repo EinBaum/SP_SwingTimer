@@ -5,7 +5,7 @@
 ## Notes: Auto-Attack Swing Timer. Parry support. Slam support. In-battle Weapon swap support. Chat command: |cffa050ff/st|r
 ## Dependencies:
 ## OptionalDeps:
-## SavedVariablesPerCharacter:
-## SavedVariables: SP_ST_GS
+## SavedVariablesPerCharacter: SP_ST_GS
+## SavedVariables: 
 SP_SwingTimer.xml
 SP_SwingTimer.lua
