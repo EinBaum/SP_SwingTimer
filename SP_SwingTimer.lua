@@ -206,8 +206,9 @@ function SP_ST_OnEvent()
 
 		local a,b,spell = string.find (arg1, "Your (.+) hits")
 		if not spell then a,b,spell = string.find(arg1, "Your (.+) crits") end
-		if not spell then a,b,spell = string.find(arg1, "Your (.+) is") end
-		if not spell then a,b,spell = string.find(arg1, "Your (.+) misses") end
+		if not spell then a,b,spell = string.find(arg1, "Your (.+) is parried") end
+		if not spell then a,b,spell = string.find(arg1, "Your (.+) was dodged") end
+		if not spell then a,b,spell = string.find(arg1, "Your (.+) missed") end
 
 		if spell == "Heroic Strike" or spell == "Cleave" or spell == "Slam" then
 			SP_ST_Reset()
