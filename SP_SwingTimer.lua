@@ -20,6 +20,12 @@ SP_ST_SlamTime = 1.5
 SP_ST_InCombat = false
 SP_ST_TimeLeft = 0.0
 
+SP_ST_CombatSpells = {
+	["Heroic Strike"] = 1,
+	["Cleave"] = 1,
+	["Slam"] = 1,
+	["Raptor Strike"] = 1,
+}
 
 function SP_ST_Print(msg)
 	DEFAULT_CHAT_FRAME:AddMessage("[ST] "..msg, 0.9, 0.3, 1)
@@ -38,7 +44,7 @@ function SP_ST_Handler(msg)
 
 	if ((cmd == nil or cmd == "") and arg == nil) then
 		SP_ST_Print("Chat commands: x, y, w, h, a, reset, show")
-		SP_ST_Print("    Example: /st show")
+		SP_ST_Print("    Example: /st reset")
 		SP_ST_Print("    Example: /st y -150")
 	elseif (cmd == "x") then
 		if (arg ~= nil) then
@@ -84,8 +90,9 @@ function SP_ST_Handler(msg)
 		SP_ST_ResetSize()
 		SP_ST_ResetPosition()
 	elseif (cmd == "show") then
-		SP_ST_Reset()
 	end
+
+	SP_ST_TestShow()
 end
 
 function SP_ST_ResetPosition()
@@ -210,7 +217,7 @@ function SP_ST_OnEvent()
 		if not spell then a,b,spell = string.find(arg1, "Your (.+) was dodged") end
 		if not spell then a,b,spell = string.find(arg1, "Your (.+) missed") end
 
-		if spell == "Heroic Strike" or spell == "Cleave" or spell == "Slam" then
+		if SP_ST_CombatSpells[spell] then
 			SP_ST_Reset()
 		end
 	elseif (event == "CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES") then
@@ -259,11 +266,13 @@ end
 function SP_ST_Reset()
 	SP_ST_TimeLeft = SP_ST_GetWeaponSpeed()
 end
+function SP_ST_TestShow()
+	SP_ST_Reset()
+end
 function SP_ST_Display(msg)
 	SP_ST_FrameText:SetText(msg)
 end
 function SP_ST_UpdateDisplay()
-	local width = tonumber(SP_ST_GS["w"]) or 500
 	if (SP_ST_TimeLeft == 0) then
 		SP_ST_FrameTime:Hide()
 		SP_ST_Display("0.0")
@@ -272,6 +281,7 @@ function SP_ST_UpdateDisplay()
 			SP_ST_Frame:SetAlpha(0)
 		end
 	else
+		local width = tonumber(SP_ST_GS["w"]) or 500
 		local size = (SP_ST_TimeLeft / SP_ST_GetWeaponSpeed()) * width
 		if (size > width) then
 			size = width
@@ -289,7 +299,3 @@ function SP_ST_UpdateDisplay()
 		SP_ST_Frame:SetAlpha(SP_ST_GS["a"])
 	end
 end
-
-
-
-
