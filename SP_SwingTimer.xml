@@ -15,7 +15,7 @@
 		</Scripts>
 
 		<Size>
-			<AbsDimension x="500" y="15" />
+			<AbsDimension x="300" y="15" />
 		</Size>
 
 		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background">
@@ -25,7 +25,7 @@
 			<Layer level="ARTWORK">
 				<Texture name="SP_ST_FrameTime">
 					<Size>
-						<AbsDimension x="500" y="15" />
+						<AbsDimension x="300" y="15" />
 					</Size>
 					<Anchors>
 						<Anchor point="CENTER">
@@ -42,7 +42,7 @@
 					</Shadow>
 					<FontHeight val="15"/>
 					<Size>
-						<AbsDimension x="500" y="15" />
+						<AbsDimension x="300" y="15" />
 					</Size>
 					<Anchors>
 						<Anchor point="CENTER">
