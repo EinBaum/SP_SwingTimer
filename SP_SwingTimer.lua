@@ -196,6 +196,10 @@ function SP_ST_OnEvent()
 	if (event == "ADDON_LOADED") then
 		if (string.lower(arg1) == "sp_swingtimer") then
 
+			if (SP_ST_GS == nil) then
+				StaticPopup_Show("SP_ST_Install")
+			end
+
 			UpdateGlobal()
 			UpdateWeapon()
 			UpdateSize()
