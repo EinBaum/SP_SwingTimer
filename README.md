@@ -49,6 +49,12 @@ Confirmed to work with the following classes: Warrior, Hunter, all casters
 	Change alpha:
 		/st a [number] *(between 0-1)*
 
+	Get scale:
+		/st s
+
+	Change scale:
+		/st s [number]
+
 	Reset default bar position and size (x=0, y=-100, w=500, h=15):
 		/st reset
 

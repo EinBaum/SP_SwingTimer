@@ -1,4 +1,6 @@
 
+local version = "2.1"
+
 local weapon = nil
 local slamTime = 1.5
 local inCombat = false
@@ -39,6 +41,7 @@ local function UpdateGlobal()
 	if not SP_ST_GS["w"] then SP_ST_GS["w"] = 300 end
 	if not SP_ST_GS["h"] then SP_ST_GS["h"] = 15 end
 	if not SP_ST_GS["a"] then SP_ST_GS["a"] = 1 end
+	if not SP_ST_GS["s"] then SP_ST_GS["s"] = 1 end
 end
 local function UpdatePosition()
 	SP_ST_Frame:SetPoint("CENTER", "UIParent", "CENTER", SP_ST_GS["x"], SP_ST_GS["y"])
@@ -49,6 +52,7 @@ local function UpdateSize()
 		getglobal(region):SetHeight(SP_ST_GS["h"])
 	end
 	UpdatePosition()
+	SP_ST_Frame:SetScale(SP_ST_GS["s"])
 end
 local function UpdateAlpha()
 	for _,region in ipairs(regions) do
@@ -113,8 +117,7 @@ local function ChatHandler(msg)
 	local cmd, arg = vars[1], vars[2]
 
 	if ((cmd == nil or cmd == "") and arg == nil) then
-		Print("Chat commands: x, y, w, h, a, reset, show")
-		Print("    Example: /st reset")
+		Print("Chat commands: x, y, w (width), h (height), a (alpha), s (scale), reset, show")
 		Print("    Example: /st y -150")
 	elseif (cmd == "x") then
 		if (arg ~= nil) then
@@ -155,6 +158,14 @@ local function ChatHandler(msg)
 			Print("A(lpha) set: "..SP_ST_GS["a"])
 		else
 			Print("Current alpha: "..SP_ST_GS["a"]..". To change a say: /st a [number]")
+		end
+	elseif (cmd == "s") then
+		if (arg ~= nil) then
+			SP_ST_GS["s"] = tonumber(arg)
+			UpdateSize()
+			Print("S(cale) set: "..SP_ST_GS["s"])
+		else
+			Print("Current scale: "..SP_ST_GS["s"]..". To change s say: /st s [number]")
 		end
 	elseif (cmd == "reset") then
 		SP_ST_GS = nil
@@ -207,7 +218,7 @@ function SP_ST_OnEvent()
 			UpdateAlpha()
 			SP_ST_Frame:Hide()
 
-			Print("SP_SwingTimer 2.0 loaded. Options: /st")
+			Print("SP_SwingTimer " .. version .. " loaded. Options: /st")
 		end
 
 	elseif (event == "PLAYER_REGEN_ENABLED") then
