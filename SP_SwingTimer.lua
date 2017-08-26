@@ -182,7 +182,7 @@ end
 --------------------------------------------------------------------------------
 
 StaticPopupDialogs["SP_ST_Install"] = {
-	text = TEXT("Thanks for installing SP_SwingTimer 2.0! Use the chat command /st to change the settings."),
+	text = TEXT("Thanks for installing SP_SwingTimer " ..version .. "! Use the chat command /st to change the settings."),
 	button1 = TEXT(YES),
 	timeout = 0,
 	hideOnEscape = 1,
