@@ -1,1 +1,1 @@
-/run if not AtkSpell then for AtkSlot = 1,72 do if IsAttackAction(AtkSlot) then AtkSpell = AtkSlot;end;end;end; if not IsCurrentAction(AtkSpell) then UseAction(AtkSpell);end; if SP_ST_TimeLeft <=1.5 then CastSpellByName("Slam()") end
+/run if not AtkSpell then for AtkSlot = 1,72 do if IsAttackAction(AtkSlot) then AtkSpell = AtkSlot;end;end;end; if not IsCurrentAction(AtkSpell) then UseAction(AtkSpell);end; if st_timer <=1.5 then CastSpellByName("Slam()") end
