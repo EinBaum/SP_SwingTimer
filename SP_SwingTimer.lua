@@ -1,5 +1,5 @@
 
-local version = "2.1"
+local version = "2.1.1"
 
 local weapon = nil
 local slamTime = 1.5
@@ -11,6 +11,7 @@ local combatSpells = {
 	["Cleave"] = 1,
 	["Slam"] = 1,
 	["Raptor Strike"] = 1,
+	["Maul"] = 1,
 }
 
 local regions = {"SP_ST_Frame", "SP_ST_FrameTime", "SP_ST_FrameText"}

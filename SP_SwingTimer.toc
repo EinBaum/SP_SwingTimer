@@ -1,7 +1,7 @@
 ## Interface: 11200
 ## Title: SP_|cffa050ffSwingTimer|r
 ## Author: https://github.com/EinBaum
-## Version: 2.1
+## Version: 2.1.1
 ## Notes: Auto-Attack Swing Timer. Parry support. Slam support. In-battle Weapon swap support. Chat command: |cffa050ff/st|r
 ## Dependencies:
 ## OptionalDeps:
