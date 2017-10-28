@@ -1,1 +1,2 @@
-/run if not AtkSpell then for AtkSlot = 1,72 do if IsAttackAction(AtkSlot) then AtkSpell = AtkSlot;end;end;end; if not IsCurrentAction(AtkSpell) then UseAction(AtkSpell);end; if st_timer <=1.5 then CastSpellByName("Slam()") end
+/run if false then CastSpellByName"Slam()" end
+/run if not _a then for i=1,72 do if IsAttackAction(i) then _a=i end end end if not IsCurrentAction(_a)then UseAction(_a)end if st_timer>UnitAttackSpeed"player"*0.9 then CastSpellByName"Slam()" end

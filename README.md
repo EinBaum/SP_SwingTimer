@@ -60,3 +60,7 @@ Confirmed to work with the following classes: Warrior, Hunter, all casters
 
 	Show the timer. For testing only.
 		/st show
+
+### SLAM MACRO.txt
+
+This spammable macro will only cast Slam if the swing timer has just been reset after an auto attack.
