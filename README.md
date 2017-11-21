@@ -17,6 +17,10 @@ Confirmed to work with the following classes: Warrior, Hunter, all casters
 - Bar color changes when the remaining swing time is lower than the casting time of Slam.
 - Support for switching weapons during combat
 
+### Preview
+
+https://www.youtube.com/watch?v=swfxZO5xGwU
+
 ### Settings
 
 	General help and info:
@@ -64,3 +68,7 @@ Confirmed to work with the following classes: Warrior, Hunter, all casters
 ### SLAM MACRO.txt
 
 This spammable macro will only cast Slam if the swing timer has just been reset after an auto attack.
+
+### Download
+
+![Download ZIP](https://github.com/EinBaum/SP_SwingTimer/releases "Download ZIP")
