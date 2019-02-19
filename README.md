@@ -1,7 +1,7 @@
 
 # SP_SwingTimer
 
-Author: EinBaum (known as Bulldozer @ Emerald Dream)
+Author: EinBaum
 
 ### About
 
@@ -11,7 +11,7 @@ Two weapons are not guaranteed to work correctly.
 
 ### Features
 
-Confirmed to work with the following classes: Warrior, Hunter, all casters
+Shows a melee swing timer (no auto shot & wand timer!)
 
 - Attempts to calculate swing timer after Parry. Info: http://www.wowwiki.com/Parry
 - Bar color changes when the remaining swing time is lower than the casting time of Slam.
@@ -19,6 +19,7 @@ Confirmed to work with the following classes: Warrior, Hunter, all casters
 
 ### Preview
 
+(not my video)
 https://www.youtube.com/watch?v=swfxZO5xGwU
 
 ### Settings
@@ -71,4 +72,4 @@ This spammable macro will only cast Slam if the swing timer has just been reset 
 
 ### Download
 
-![Download ZIP](https://github.com/EinBaum/SP_SwingTimer/releases "Download ZIP")
+[Download ZIP](https://github.com/EinBaum/SP_SwingTimer/releases "Download ZIP")
