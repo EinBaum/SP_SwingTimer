@@ -14,7 +14,6 @@ Two weapons are not guaranteed to work correctly.
 Confirmed to work with the following classes: Warrior, Hunter, all casters
 
 - Attempts to calculate swing timer after Parry. Info: http://www.wowwiki.com/Parry
-- Bar color changes when the remaining swing time is lower than the casting time of Slam.
 - Support for switching weapons during combat
 
 ### Preview

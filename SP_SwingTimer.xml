@@ -35,12 +35,12 @@
 			</Layer>
 			<Layer level="OVERLAY">
 				<FontString name="SP_ST_FrameText" font="Fonts\FRIZQT__.TTF" text="">
-					<Color r="1" g="1" b="1" a="1" />
+					<Color r="1" g="1" b="1" />
 					<Shadow>
 						<Offset x="1" y="1" />
 						<Color r="0" g="0" b="0" />
 					</Shadow>
-					<FontHeight val="15"/>
+					<FontHeight val="12" />
 					<Size>
 						<AbsDimension x="300" y="15" />
 					</Size>

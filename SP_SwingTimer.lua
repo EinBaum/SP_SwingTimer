@@ -1,8 +1,7 @@
 
-local version = "2.1.1"
+local version = "2.1.2"
 
 local weapon = nil
-local slamTime = 1.5
 local inCombat = false
 st_timer = 0.0
 
@@ -95,11 +94,9 @@ local function UpdateDisplay()
 		local size = (st_timer / GetWeaponSpeed()) * width
 		if (size > width) then
 			size = width
-			SP_ST_FrameTime:SetTexture(1, 0, 0.6, 0.9)
-		elseif (st_timer <= slamTime) then
-			SP_ST_FrameTime:SetTexture(0, 1, 0, 0.9)
+			SP_ST_FrameTime:SetTexture(1, 0.5, 0.5, 1)
 		else
-			SP_ST_FrameTime:SetTexture(1, 0.6, 0, 0.8)
+			SP_ST_FrameTime:SetTexture(0, 0.65, 0, 1)
 		end
 		SP_ST_FrameTime:SetWidth(size)
 
@@ -222,7 +219,8 @@ function SP_ST_OnEvent()
 			Print("SP_SwingTimer " .. version .. " loaded. Options: /st")
 		end
 
-	elseif (event == "PLAYER_REGEN_ENABLED") then
+	elseif (event == "PLAYER_REGEN_ENABLED")
+		or (event == "PLAYER_ENTERING_WORLD") then
 		inCombat = false
 		UpdateDisplay()
 
