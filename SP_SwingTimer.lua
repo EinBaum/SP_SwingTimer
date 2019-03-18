@@ -1,5 +1,5 @@
 
-local version = "2.1.2"
+local version = "2.1.3"
 
 local weapon = nil
 local inCombat = false
@@ -38,8 +38,8 @@ local function UpdateGlobal()
 	if not SP_ST_GS then SP_ST_GS = {} end
 	if not SP_ST_GS["x"] then SP_ST_GS["x"] = 0 end
 	if not SP_ST_GS["y"] then SP_ST_GS["y"] = -150 end
-	if not SP_ST_GS["w"] then SP_ST_GS["w"] = 300 end
-	if not SP_ST_GS["h"] then SP_ST_GS["h"] = 15 end
+	if not SP_ST_GS["w"] then SP_ST_GS["w"] = 200 end
+	if not SP_ST_GS["h"] then SP_ST_GS["h"] = 10 end
 	if not SP_ST_GS["a"] then SP_ST_GS["a"] = 1 end
 	if not SP_ST_GS["s"] then SP_ST_GS["s"] = 1 end
 end
