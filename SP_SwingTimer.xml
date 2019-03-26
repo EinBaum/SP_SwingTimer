@@ -15,7 +15,7 @@
 		</Scripts>
 
 		<Size>
-			<AbsDimension x="300" y="15" />
+			<AbsDimension x="200" y="10" />
 		</Size>
 
 		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background">
@@ -25,30 +25,13 @@
 			<Layer level="ARTWORK">
 				<Texture name="SP_ST_FrameTime">
 					<Size>
-						<AbsDimension x="300" y="15" />
+						<AbsDimension x="200" y="10" />
 					</Size>
 					<Anchors>
 						<Anchor point="CENTER">
 						</Anchor>
 					</Anchors>
 				</Texture>
-			</Layer>
-			<Layer level="OVERLAY">
-				<FontString name="SP_ST_FrameText" font="Fonts\FRIZQT__.TTF" text="">
-					<Color r="1" g="1" b="1" />
-					<Shadow>
-						<Offset x="1" y="1" />
-						<Color r="0" g="0" b="0" />
-					</Shadow>
-					<FontHeight val="12" />
-					<Size>
-						<AbsDimension x="300" y="15" />
-					</Size>
-					<Anchors>
-						<Anchor point="CENTER">
-						</Anchor>
-					</Anchors>
-				</FontString>
 			</Layer>
 		</Layers>
 	</Frame>

@@ -1,10 +1,26 @@
 
-local version = "2.1.3"
+local version = "3.0.0"
 
-local weapon = nil
-local inCombat = false
-st_timer = 0.0
-
+local defaults = {
+	x = 0,
+	y = -150,
+	w = 200,
+	h = 10,
+	b = 2,
+	a = 1,
+	s = 1,
+	style = 0
+}
+local settings = {
+	x = "Bar X position",
+	y = "Bar Y position",
+	w = "Bar width",
+	h = "Bar height",
+	b = "Border height",
+	a = "Alpha between 0 and 1",
+	s = "Bar scale",
+	style = "Choose 1, 2, 3, 4, 5 or 6"
+}
 local combatSpells = {
 	["Heroic Strike"] = 1,
 	["Cleave"] = 1,
@@ -13,12 +29,25 @@ local combatSpells = {
 	["Maul"] = 1,
 }
 
-local regions = {"SP_ST_Frame", "SP_ST_FrameTime", "SP_ST_FrameText"}
+--------------------------------------------------------------------------------
+
+local weapon = nil
+local combat = false
+st_timer = 0.0
 
 --------------------------------------------------------------------------------
 
-local function Print(msg)
-	DEFAULT_CHAT_FRAME:AddMessage("[ST] "..msg, 1.0, 0.5, 1)
+StaticPopupDialogs["SP_ST_Install"] = {
+	text = TEXT("Thanks for installing SP_SwingTimer " ..version .. "! Use the chat command /st to change the settings."),
+	button1 = TEXT(YES),
+	timeout = 0,
+	hideOnEscape = 1,
+}
+
+--------------------------------------------------------------------------------
+
+local function print(msg)
+	DEFAULT_CHAT_FRAME:AddMessage(msg, 1, 1, 0.5)
 end
 local function SplitString(s,t)
 	local l = {n=0}
@@ -34,30 +63,38 @@ local function SplitString(s,t)
 	l[l.n] = string.gsub(s,"(%s%s*)$","")
 	return l
 end
-local function UpdateGlobal()
+
+--------------------------------------------------------------------------------
+
+local function UpdateSettings()
 	if not SP_ST_GS then SP_ST_GS = {} end
-	if not SP_ST_GS["x"] then SP_ST_GS["x"] = 0 end
-	if not SP_ST_GS["y"] then SP_ST_GS["y"] = -150 end
-	if not SP_ST_GS["w"] then SP_ST_GS["w"] = 200 end
-	if not SP_ST_GS["h"] then SP_ST_GS["h"] = 10 end
-	if not SP_ST_GS["a"] then SP_ST_GS["a"] = 1 end
-	if not SP_ST_GS["s"] then SP_ST_GS["s"] = 1 end
+	for option, value in defaults do
+		if SP_ST_GS[option] == nil then
+			SP_ST_GS[option] = value
+		end
+	end
 end
-local function UpdatePosition()
+local function UpdateAppearance()
+	SP_ST_Frame:ClearAllPoints()
 	SP_ST_Frame:SetPoint("CENTER", "UIParent", "CENTER", SP_ST_GS["x"], SP_ST_GS["y"])
-end
-local function UpdateSize()
-	for _,region in ipairs(regions) do
-		getglobal(region):SetWidth(SP_ST_GS["w"])
-		getglobal(region):SetHeight(SP_ST_GS["h"])
+
+	SP_ST_FrameTime:ClearAllPoints()
+	local style = SP_ST_GS["style"]
+	if style == 1 or style == 2 then
+		SP_ST_FrameTime:SetPoint("LEFT", "SP_ST_Frame", "LEFT")
+	elseif style == 3 or style == 4 then
+		SP_ST_FrameTime:SetPoint("RIGHT", "SP_ST_Frame", "RIGHT")
+	else
+		SP_ST_FrameTime:SetPoint("CENTER", "SP_ST_Frame", "CENTER")
 	end
-	UpdatePosition()
+
+	SP_ST_Frame:SetWidth(SP_ST_GS["w"])
+	SP_ST_Frame:SetHeight(SP_ST_GS["h"])
+	SP_ST_FrameTime:SetWidth(SP_ST_GS["w"])
+	SP_ST_FrameTime:SetHeight(SP_ST_GS["h"] - SP_ST_GS["b"])
+
+	SP_ST_Frame:SetAlpha(SP_ST_GS["a"])
 	SP_ST_Frame:SetScale(SP_ST_GS["s"])
-end
-local function UpdateAlpha()
-	for _,region in ipairs(regions) do
-		getglobal(region):SetAlpha(SP_ST_GS["a"])
-	end
 end
 local function GetWeaponSpeed()
 	local speedMH, speedOH = UnitAttackSpeed("player")
@@ -77,114 +114,36 @@ end
 local function TestShow()
 	ResetTimer()
 end
-local function SetBarText(msg)
-	SP_ST_FrameText:SetText(msg)
-end
 local function UpdateDisplay()
-	if (st_timer == 0) then
-		SetBarText("0.0")
-		SP_ST_FrameTime:Hide()
+	local style = SP_ST_GS["style"]
+	if (st_timer <= 0) then
+		if style == 2 or style == 4 or style == 6 then
+			--nothing
+		else
+			SP_ST_FrameTime:Hide()
+		end
 
-		if (not inCombat) then
+		if (not combat) then
 			SP_ST_Frame:Hide()
 		end
 	else
 		SP_ST_FrameTime:Show()
 		local width = SP_ST_GS["w"]
 		local size = (st_timer / GetWeaponSpeed()) * width
+		if style == 2 or style == 4 or style == 6 then
+			size = width - size
+		end
 		if (size > width) then
 			size = width
-			SP_ST_FrameTime:SetTexture(1, 0.5, 0.5, 1)
+			SP_ST_FrameTime:SetTexture(1, 0.8, 0.8, 1)
 		else
-			SP_ST_FrameTime:SetTexture(0, 0.65, 0, 1)
+			SP_ST_FrameTime:SetTexture(1, 1, 1, 1)
 		end
 		SP_ST_FrameTime:SetWidth(size)
-
-		SetBarText(string.sub(st_timer, 1, 3))
 	end
-end
-
-local function ChatHandler(msg)
-	local vars = SplitString(msg, " ")
-	for k,v in vars do
-		if v == "" then
-			v = nil
-		end
-	end
-
-	local cmd, arg = vars[1], vars[2]
-
-	if ((cmd == nil or cmd == "") and arg == nil) then
-		Print("Chat commands: x, y, w (width), h (height), a (alpha), s (scale), reset, show")
-		Print("    Example: /st y -150")
-	elseif (cmd == "x") then
-		if (arg ~= nil) then
-			SP_ST_GS["x"] = tonumber(arg)
-			UpdatePosition()
-			Print("X set: "..arg)
-		else
-			Print("Current x: "..SP_ST_GS["x"]..". To change x say: /st x [number]")
-		end
-	elseif (cmd == "y") then
-		if (arg ~= nil) then
-			SP_ST_GS["y"] = tonumber(arg)
-			UpdatePosition()
-			Print("Y set: "..arg)
-		else
-			Print("Current y: "..SP_ST_GS["y"]..". To change y say: /st y [number]")
-		end
-	elseif (cmd == "w") then
-		if (arg ~= nil) then
-			SP_ST_GS["w"] = tonumber(arg)
-			UpdateSize()
-			Print("W(idth) set: "..arg)
-		else
-			Print("Current w: "..SP_ST_GS["w"]..". To change w say: /st w [number]")
-		end
-	elseif (cmd == "h") then
-		if (arg ~= nil) then
-			SP_ST_GS["h"] = tonumber(arg)
-			UpdateSize()
-			Print("H(eight) set: "..arg)
-		else
-			Print("Current h: "..SP_ST_GS["h"]..". To change h say: /st h [number]")
-		end
-	elseif (cmd == "a") then
-		if (arg ~= nil) then
-			SP_ST_GS["a"] = math.max(math.min(tonumber(arg),1),0)
-			UpdateAlpha()
-			Print("A(lpha) set: "..SP_ST_GS["a"])
-		else
-			Print("Current alpha: "..SP_ST_GS["a"]..". To change a say: /st a [number]")
-		end
-	elseif (cmd == "s") then
-		if (arg ~= nil) then
-			SP_ST_GS["s"] = tonumber(arg)
-			UpdateSize()
-			Print("S(cale) set: "..SP_ST_GS["s"])
-		else
-			Print("Current scale: "..SP_ST_GS["s"]..". To change s say: /st s [number]")
-		end
-	elseif (cmd == "reset") then
-		SP_ST_GS = nil
-		UpdateGlobal()
-		UpdateSize()
-		UpdatePosition()
-		UpdateAlpha()
-	elseif (cmd == "show") then
-	end
-
-	TestShow()
 end
 
 --------------------------------------------------------------------------------
-
-StaticPopupDialogs["SP_ST_Install"] = {
-	text = TEXT("Thanks for installing SP_SwingTimer " ..version .. "! Use the chat command /st to change the settings."),
-	button1 = TEXT(YES),
-	timeout = 0,
-	hideOnEscape = 1,
-}
 
 function SP_ST_OnLoad()
 	this:RegisterEvent("ADDON_LOADED")
@@ -195,10 +154,6 @@ function SP_ST_OnLoad()
 	this:RegisterEvent("CHAT_MSG_COMBAT_SELF_HITS")
 	this:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
 	this:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES")
-
-	SLASH_SPSWINGTIMER1 = "/st"
-	SLASH_SPSWINGTIMER2 = "/swingtimer"
-	SlashCmdList["SPSWINGTIMER"] = ChatHandler
 end
 
 function SP_ST_OnEvent()
@@ -209,29 +164,26 @@ function SP_ST_OnEvent()
 				StaticPopup_Show("SP_ST_Install")
 			end
 
-			UpdateGlobal()
+			UpdateSettings()
 			UpdateWeapon()
-			UpdateSize()
-			UpdatePosition()
-			UpdateAlpha()
-			SP_ST_Frame:Hide()
+			UpdateAppearance()
 
-			Print("SP_SwingTimer " .. version .. " loaded. Options: /st")
+			print("SP_SwingTimer " .. version .. " loaded. Options: /st")
 		end
 
 	elseif (event == "PLAYER_REGEN_ENABLED")
 		or (event == "PLAYER_ENTERING_WORLD") then
-		inCombat = false
+		combat = false
 		UpdateDisplay()
 
 	elseif (event == "PLAYER_REGEN_DISABLED") then
-		inCombat = true
+		combat = true
 
 	elseif (event == "UNIT_INVENTORY_CHANGED") then
 		if (arg1 == "player") then
 			local oldWep = weapon
 			UpdateWeapon()
-			if (inCombat and oldWep ~= weapon) then
+			if (combat and oldWep ~= weapon) then
 				ResetTimer()
 			end
 		end
@@ -297,3 +249,44 @@ function SP_ST_OnUpdate(delta)
 	end
 	UpdateDisplay()
 end
+
+--------------------------------------------------------------------------------
+
+SLASH_SPSWINGTIMER1 = "/st"
+SLASH_SPSWINGTIMER2 = "/swingtimer"
+
+local function ChatHandler(msg)
+	local vars = SplitString(msg, " ")
+	for k,v in vars do
+		if v == "" then
+			v = nil
+		end
+	end
+	local cmd, arg = vars[1], vars[2]
+	if cmd == "reset" then
+		SP_ST_GS = nil
+		UpdateSettings()
+		UpdateAppearance()
+		print("Reset to defaults.")
+	elseif settings[cmd] ~= nil then
+		if arg ~= nil then
+			local number = tonumber(arg)
+			if number then
+				SP_ST_GS[cmd] = number
+				UpdateAppearance()
+			else
+				print("Error: Invalid argument")
+			end
+		end
+		print(format("%s %s %s (%s)",
+			SLASH_SPSWINGTIMER1, cmd, SP_ST_GS[cmd], settings[cmd]))
+	else
+		for k, v in settings do
+			print(format("%s %s %s (%s)",
+				SLASH_SPSWINGTIMER1, k, SP_ST_GS[k], v))
+		end
+	end
+	TestShow()
+end
+
+SlashCmdList["SPSWINGTIMER"] = ChatHandler
