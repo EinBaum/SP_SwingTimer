@@ -1,5 +1,5 @@
 
-local version = "3.0.0"
+local version = "3.0.1"
 
 local defaults = {
 	x = 0,
@@ -28,6 +28,25 @@ local combatSpells = {
 	["Raptor Strike"] = 1,
 	["Maul"] = 1,
 }
+local combatStrings = {
+	SPELLLOGSELFOTHER,			-- Your %s hits %s for %d.
+	SPELLLOGCRITSELFOTHER,		-- Your %s crits %s for %d.
+	SPELLDODGEDSELFOTHER,		-- Your %s was dodged by %s.
+	SPELLPARRIEDSELFOTHER,		-- Your %s is parried by %s.
+	SPELLMISSSELFOTHER,			-- Your %s missed %s.
+	SPELLBLOCKEDSELFOTHER,		-- Your %s was blocked by %s.
+	SPELLDEFLECTEDSELFOTHER,	-- Your %s was deflected by %s.
+	SPELLEVADEDSELFOTHER,		-- Your %s was evaded by %s.
+	SPELLIMMUNESELFOTHER,		-- Your %s failed. %s is immune.
+	SPELLLOGABSORBSELFOTHER,	-- Your %s is absorbed by %s.
+	SPELLREFLECTSELFOTHER,		-- Your %s is reflected back by %s.
+	SPELLRESISTSELFOTHER		-- Your %s was resisted by %s.
+}
+for index in combatStrings do
+	for _, pattern in {"%%s", "%%d"} do
+		combatStrings[index] = gsub(combatStrings[index], pattern, "(.*)")
+	end
+end
 
 --------------------------------------------------------------------------------
 
@@ -201,14 +220,12 @@ function SP_ST_OnEvent()
 		end
 
 	elseif (event == "CHAT_MSG_SPELL_SELF_DAMAGE") then
-		local a,b,spell = string.find (arg1, "Your (.+) hits")
-		if not spell then a,b,spell = string.find(arg1, "Your (.+) crits") end
-		if not spell then a,b,spell = string.find(arg1, "Your (.+) is parried") end
-		if not spell then a,b,spell = string.find(arg1, "Your (.+) was dodged") end
-		if not spell then a,b,spell = string.find(arg1, "Your (.+) missed") end
-
-		if spell and combatSpells[spell] then
-			ResetTimer()
+		for _, str in combatStrings do
+			local _, _, spell = strfind(arg1, str)
+			if spell and combatSpells[spell] then
+				ResetTimer()
+				break
+			end
 		end
 
 	elseif (event == "CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES") then
