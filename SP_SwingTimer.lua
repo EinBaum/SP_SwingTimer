@@ -1,5 +1,5 @@
 
-local version = "3.0.1"
+local version = "3.1.0"
 
 local defaults = {
 	x = 0,
@@ -52,6 +52,7 @@ end
 
 local weapon = nil
 local combat = false
+local prevWepSpeed = nil;
 st_timer = 0.0
 
 --------------------------------------------------------------------------------
@@ -127,6 +128,7 @@ local function UpdateWeapon()
 	weapon = GetInventoryItemLink("player", GetInventorySlotInfo("MainHandSlot"))
 end
 local function ResetTimer()
+	prevWepSpeed = GetWeaponSpeed();
 	st_timer = GetWeaponSpeed()
 	SP_ST_Frame:Show()
 end
@@ -173,6 +175,9 @@ function SP_ST_OnLoad()
 	this:RegisterEvent("CHAT_MSG_COMBAT_SELF_HITS")
 	this:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
 	this:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES")
+	this:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
+	this:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF")
+	this:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE")
 end
 
 function SP_ST_OnEvent()
@@ -225,6 +230,16 @@ function SP_ST_OnEvent()
 			if spell and combatSpells[spell] then
 				ResetTimer()
 				break
+			end
+		end
+
+	-- Here we check at every aura gain/loss if the weaponspeed is changed, if it is we modify the timer acordingly 
+	elseif (event == "CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS") or (event == "CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE") or (event == "CHAT_MSG_SPELL_AURA_GONE_SELF") then
+		if (prevWepSpeed ~= nil) then
+			local newSpeed = GetWeaponSpeed();
+			if (prevWepSpeed ~= newSpeed) then
+				local perc = st_timer / prevWepSpeed;
+				st_timer = newSpeed * perc;
 			end
 		end
 
