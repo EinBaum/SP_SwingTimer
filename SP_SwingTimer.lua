@@ -1,5 +1,5 @@
 
-local version = "3.0.1"
+local version = "3.1.0"
 
 local defaults = {
 	x = 0,
@@ -52,6 +52,7 @@ end
 
 local weapon = nil
 local combat = false
+local prevWepSpeed = nil;
 st_timer = 0.0
 
 --------------------------------------------------------------------------------
@@ -127,6 +128,7 @@ local function UpdateWeapon()
 	weapon = GetInventoryItemLink("player", GetInventorySlotInfo("MainHandSlot"))
 end
 local function ResetTimer()
+	prevWepSpeed = GetWeaponSpeed();
 	st_timer = GetWeaponSpeed()
 	SP_ST_Frame:Show()
 end
@@ -173,6 +175,8 @@ function SP_ST_OnLoad()
 	this:RegisterEvent("CHAT_MSG_COMBAT_SELF_HITS")
 	this:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
 	this:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES")
+	this:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
+	this:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF")
 end
 
 function SP_ST_OnEvent()
@@ -225,6 +229,24 @@ function SP_ST_OnEvent()
 			if spell and combatSpells[spell] then
 				ResetTimer()
 				break
+			end
+		end
+
+	elseif (event == "CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS") then
+		if (prevWepSpeed ~= nil) then
+			if (string.find(arg1, "Flurry")) then
+				local newSpeed = GetWeaponSpeed();
+				local perc = st_timer / prevWepSpeed;
+				st_timer = newSpeed * perc;
+			end
+		end
+
+	elseif (event == "CHAT_MSG_SPELL_AURA_GONE_SELF") then
+		if (prevWepSpeed ~= nil) then
+			if (string.find(arg1, "Flurry")) then
+				local newSpeed = GetWeaponSpeed();
+				local perc = st_timer / prevWepSpeed;
+				st_timer = newSpeed * perc;
 			end
 		end
 
