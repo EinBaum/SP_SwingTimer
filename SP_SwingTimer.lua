@@ -177,6 +177,7 @@ function SP_ST_OnLoad()
 	this:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES")
 	this:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
 	this:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF")
+	this:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE")
 end
 
 function SP_ST_OnEvent()
@@ -232,19 +233,11 @@ function SP_ST_OnEvent()
 			end
 		end
 
-	elseif (event == "CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS") then
+	-- Here we check at every aura gain/loss if the weaponspeed is changed, if it is we modify the timer acordingly 
+	elseif (event == "CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS") or (event == "CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE") or (event == "CHAT_MSG_SPELL_AURA_GONE_SELF") then
 		if (prevWepSpeed ~= nil) then
-			if (string.find(arg1, "Flurry")) then
-				local newSpeed = GetWeaponSpeed();
-				local perc = st_timer / prevWepSpeed;
-				st_timer = newSpeed * perc;
-			end
-		end
-
-	elseif (event == "CHAT_MSG_SPELL_AURA_GONE_SELF") then
-		if (prevWepSpeed ~= nil) then
-			if (string.find(arg1, "Flurry")) then
-				local newSpeed = GetWeaponSpeed();
+			local newSpeed = GetWeaponSpeed();
+			if (prevWepSpeed ~= newSpeed) then
 				local perc = st_timer / prevWepSpeed;
 				st_timer = newSpeed * perc;
 			end
