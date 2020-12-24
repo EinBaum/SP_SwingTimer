@@ -446,10 +446,12 @@ function SP_ST_OnEvent()
 			if (SP_ST_GS == nil) then
 				StaticPopup_Show("SP_ST_Install")
 			end
-
-			for k,v in pairs(defaults) do
-				if (SP_ST_GS[k] == nil) then
-					SP_ST_GS[k] = defaults[k];
+			
+			if (SP_ST_GS ~= nil) then 
+				for k,v in pairs(defaults) do
+					if (SP_ST_GS[k] == nil) then
+						SP_ST_GS[k] = defaults[k];
+					end
 				end
 			end
 
