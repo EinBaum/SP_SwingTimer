@@ -499,16 +499,12 @@ function SP_ST_OnEvent()
 			elseif (string.find(arg1, "glancing")) then
 				dmgtype = "glancing";
 			end
-			
-			local dmg = string.sub(arg1, string.find(arg1, "for ") + 4);
-			dmg = tonumber(string.sub(dmg, 0, string.find(arg1, ".")+2));
+			local _, _, dmg, restOfArg = string.find(arg1, "(%d+)");
+			dmg = tonumber(dmg);
 
 			if (string.find(arg1, "blocked")) then
-				local p,_ = string.find(arg1, '.', 0, true);
-				local blVal = string.sub(arg1, p+3)
-				local b,_ = string.find(blVal, " ");
-				blVal = tonumber(string.sub(blVal, 0, b-1));
-				dmg = dmg + blVal;
+				local _, _, blVal = string.find(restOfArg, "(%d+)");
+				dmg = dmg + tonumber(blVal);
 			end
 			
 			if (CheckDamageSource(dmg, dmgtype) == "MAIN") then
