@@ -3,7 +3,7 @@
 
 Author: EinBaum
 
-Swing timer bar for auto attacks. Only for one weapon (main hand).
+Swing timer bar for auto attacks. **Now for both hands!**
 
 ### Settings
 
