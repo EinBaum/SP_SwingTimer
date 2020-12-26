@@ -1,5 +1,5 @@
 
-local version = "4.0.0"
+local version = "4.1.0"
 
 local defaults = {
 	x = 0,
@@ -26,13 +26,6 @@ local settings = {
 	timers = "Show weapon timers (1 = show, 0 = hide)",
 	style = "Choose 1, 2, 3, 4, 5 or 6",
 	move = "Enable bars movement",
-}
-local combatSpells = {
-	["Heroic Strike"] = 1,
-	["Cleave"] = 1,
-	["Slam"] = 1,
-	["Raptor Strike"] = 1,
-	["Maul"] = 1,
 }
 local armorDebuffs = {
 	["Interface\\Icons\\Ability_Warrior_Sunder"] = 450, 
@@ -70,7 +63,40 @@ local configmod = false;
 local playersName = UnitName("player");
 st_timer = 0.0
 st_timerOff = 0.0
-
+--------------------------------------------------------------------------------
+local loc = {};
+loc["enUS"] = {
+	hit = "You hit",
+	crit = "You crit",
+	glancing = "glancing",
+	block = "blocked",
+	Warrior = "Warrior",
+	combatSpells = {
+		HS = "Heroic Strike",
+		Cleave = "Cleave",
+		Slam = "Slam",
+		RS = "Raptor Strike",
+		Maul = "Maul"
+	}
+}
+loc["frFR"] = {
+	hit = "Vous touchez",
+	crit = "Vous infligez un coup critique",
+	glancing = "érafle",
+	block = "bloqué",
+	Warrior = "Guerrier",
+	combatSpells = {
+		HS = "Frappe héroïque",
+		Cleave = "Enchainement",
+		Slam = "Heurtoir",
+		RS = "Attaque du raptor",
+		Maul = "Mutiler"
+	}
+}
+local L = loc[GetLocale()];
+if (L == nil) then 
+	L = loc['enUS']; 
+end
 --------------------------------------------------------------------------------
 StaticPopupDialogs["SP_ST_Install"] = {
 	text = TEXT("Thanks for installing SP_SwingTimer " ..version .. "! Use the chat command /st to change the settings."),
@@ -279,9 +305,9 @@ local function CheckDamageSource(dmg, dmgType)
 	if (not UnitIsPlayer("target")) then
 		-- we will do armor check on the target here
 		local basearmor = {
-			['Warrior'] = 3791,
+			[L['Warrior']] = 3791,
 			['Paladin'] = 3075,
-			['Mage']	= 1923
+			['Mage']	= 1923,
 		};
 		local unitClass = UnitClass("target");
 		local armor = basearmor[unitClass];
@@ -492,17 +518,19 @@ function SP_ST_OnEvent()
 		end
 
 	elseif (event == "CHAT_MSG_COMBAT_SELF_HITS") then
-		if (string.find(arg1, "You hit") or string.find(arg1, "You crit") or string.find(arg1, playersName.." hits") or string.find(arg1, playersName.." crits")) then
+		if (string.find(arg1, L['hit']) or string.find(arg1, L['crit']) or string.find(arg1, playersName.." hits") or string.find(arg1, playersName.." crits")) then
 			local dmgtype = "hit";
-			if (string.find(arg1, "You crit") or string.find(arg1, playersName.." crits")) then
+			if (string.find(arg1, L['crit']) or string.find(arg1, playersName.." crits")) then
 				dmgtype = "crit";
-			elseif (string.find(arg1, "glancing")) then
+			elseif (string.find(arg1, L['glancing'])) then
 				dmgtype = "glancing";
 			end
 			local _, _, dmg, restOfArg = string.find(arg1, "(%d+)");
 			dmg = tonumber(dmg);
 
-			if (string.find(arg1, "blocked")) then
+			if (string.find(arg1, L['block'])) then
+				local p = string.find(arg1, "(.)");
+				local restOfArg = string.sub(arg1, p, string.len(arg1));
 				local _, _, blVal = string.find(restOfArg, "(%d+)");
 				dmg = dmg + tonumber(blVal);
 			end
@@ -515,8 +543,8 @@ function SP_ST_OnEvent()
 		end
 
 	elseif (event == "CHAT_MSG_SPELL_SELF_DAMAGE") then
-		for k,v in combatSpells do
-			if (string.find(arg1, k)) then
+		for k,v in L['combatSpells'] do
+			if (string.find(arg1, v)) then
 				ResetTimer(false)
 			end
 		end
