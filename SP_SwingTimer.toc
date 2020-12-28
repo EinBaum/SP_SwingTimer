@@ -1,7 +1,7 @@
 ## Interface: 11200
 ## Title: SP_|cffa050ffSwingTimer|r
 ## Author: https://github.com/EinBaum
-## Version: 4.1.0
+## Version: 4.1.1
 ## Notes: Auto-Attack Swing Timer. Chat command: |cffa050ff/st|r
 ## Dependencies:
 ## OptionalDeps:

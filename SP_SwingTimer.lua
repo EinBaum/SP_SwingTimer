@@ -1,5 +1,5 @@
 
-local version = "4.1.0"
+local version = "4.1.1"
 
 local defaults = {
 	x = 0,
@@ -284,8 +284,14 @@ local function ResetTimer(off)
 	
 	if (not off) then
 		st_timer = GetWeaponSpeed(off)
+		if (isDualWield() and st_timerOff < 0.2) then
+			st_timerOff = 0.2;
+		end
 	else
 		st_timerOff = GetWeaponSpeed(off)
+		if (isDualWield() and st_timer < 0.2) then
+			st_timer = 0.2;
+		end
 	end
 
 	SP_ST_Frame:Show()
