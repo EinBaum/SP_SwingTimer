@@ -1,5 +1,5 @@
 
-local version = "4.1.0"
+local version = "4.1.1"
 
 local defaults = {
 	x = 0,
@@ -293,7 +293,7 @@ local function ResetTimer(off)
 			st_timer = 0.2;
 		end
 	end
-	
+
 	SP_ST_Frame:Show()
 	if (isDualWield()) then SP_ST_FrameOFF:Show() end
 	
