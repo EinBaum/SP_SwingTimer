@@ -541,10 +541,16 @@ function SP_ST_OnEvent()
 				dmg = dmg + tonumber(blVal);
 			end
 			
-			if (CheckDamageSource(dmg, dmgtype) == "MAIN") then
+			if (CheckDamageSource(dmg, dmgtype) == "MAIN" and ShouldResetTimer(false)) then
 				ResetTimer(false)
-			elseif (CheckDamageSource(dmg, dmgtype) == "OFF") then
+			elseif (CheckDamageSource(dmg, dmgtype) == "OFF" and ShouldResetTimer(true)) then
 				ResetTimer(true)
+			else
+				if ShouldResetTimer(false) then
+					ResetTimer(false)
+				elseif isDualWield() then
+					ResetTimer(true)
+				end
 			end
 		end
 
@@ -574,19 +580,6 @@ function SP_ST_OnEvent()
 
 	elseif (event == "CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES") then
 		if (string.find(arg1, ".* attacks. You parry.")) then
-			--[[local percentTime = st_timer / GetWeaponSpeed()
-			if (percentTime > 0.2) then
-				local hypTimeLeft = st_timer - GetWeaponSpeed() * 0.4
-				if (hypTimeLeft <= 0.0) then
-					st_timer = 0.0
-					UpdateDisplay()
-				else
-					local hypPercentTime = hypTimeLeft / GetWeaponSpeed()
-					if (hypPercentTime > 0.2) then
-						st_timer = hypTimeLeft
-					end
-				end
-			end]]
 			local minimum = GetWeaponSpeed(false) * 0.20
 			if (st_timer > minimum) then
 				local reduct = GetWeaponSpeed(false) * 0.40
